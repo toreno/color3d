@@ -1,0 +1,378 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  color: #e8e9ec;
+  background: #1b1d23;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+header {
+  grid-column: 1 / 3;
+  padding: 12px 20px;
+  background: #14161b;
+  border-bottom: 1px solid #2a2d35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.system-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #9aa0ab;
+  white-space: nowrap;
+}
+
+.system-switch select {
+  background: #1b1d23;
+  color: #e8e9ec;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #9aa0ab;
+}
+
+#viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+#viewer canvas {
+  display: block;
+}
+
+aside {
+  background: #14161b;
+  border-left: 1px solid #2a2d35;
+  padding: 18px;
+  overflow-y: auto;
+}
+
+aside h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9aa0ab;
+  margin: 0 0 10px;
+}
+
+.control {
+  margin-bottom: 20px;
+}
+
+.control label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.control input[type="range"] {
+  width: 100%;
+}
+
+#valueLabel {
+  font-variant-numeric: tabular-nums;
+  color: #c7ccd6;
+}
+
+#info {
+  min-height: 120px;
+}
+
+#info .swatch {
+  width: 100%;
+  height: 72px;
+  border-radius: 8px;
+  border: 1px solid #3a3d45;
+  margin-bottom: 12px;
+}
+
+#info dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 14px;
+}
+
+#info dt {
+  color: #9aa0ab;
+}
+
+#info dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  font-size: 12px;
+  color: #777d88;
+  line-height: 1.6;
+}
+
+/* --- Color harmony panel --- */
+.control input[type="color"] {
+  width: 48px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.scheme-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.scheme-label select {
+  flex: 1;
+  background: #1b1d23;
+  color: #e8e9ec;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 10px;
+  background: #2a2d35;
+  color: #e8e9ec;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #343842;
+}
+
+.scheme-result {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scheme-swatch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scheme-swatch .chip {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 8px;
+  border: 1px solid #3a3d45;
+  cursor: pointer;
+}
+
+.scheme-swatch .meta {
+  font-size: 12px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.scheme-swatch .role {
+  color: #c7ccd6;
+  font-weight: 600;
+}
+
+.scheme-swatch .munsell {
+  color: #9aa0ab;
+}
+
+.scheme-swatch .hex {
+  color: #e8e9ec;
+}
+
+.scheme-swatch .rgb {
+  color: #777d88;
+}
+
+.scheme-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #c7ccd6;
+}
+
+/* Scheme swatch is now interactive (click to locate in the solid). */
+.scheme-swatch {
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.scheme-swatch:hover {
+  background: #1f222a;
+}
+
+.scheme-swatch.active {
+  background: #202633;
+  border-color: #4b78d8;
+}
+
+.scheme-swatch .meta {
+  flex: 1;
+}
+
+.copy-btn {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  background: #2a2d35;
+  color: #c7ccd6;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #343842;
+}
+
+/* --- Color-system explanation box --- */
+.system-info > summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c7ccd6;
+  list-style: none;
+  padding: 6px 0;
+  user-select: none;
+}
+
+.system-info > summary::-webkit-details-marker {
+  display: none;
+}
+
+.system-info > summary::before {
+  content: "▸ ";
+  color: #777d88;
+}
+
+.system-info[open] > summary::before {
+  content: "▾ ";
+}
+
+.system-info-body {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #9aa0ab;
+}
+
+.system-info-body p {
+  margin: 6px 0;
+}
+
+.system-info-body ul {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.system-info-body li {
+  margin: 3px 0;
+}
+
+.system-info-body b {
+  color: #c7ccd6;
+}
+
+.system-info-body code {
+  background: #1b1d23;
+  border: 1px solid #2a2d35;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 11px;
+  color: #d8dce3;
+}
+
+/* --- Value-slice multi-select buttons --- */
+.value-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 6px;
+}
+
+.value-btn {
+  width: 32px;
+  height: 32px;
+  background: #1b1d23;
+  color: #c7ccd6;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+
+.value-btn:hover {
+  background: #262a33;
+}
+
+.value-btn.selected {
+  background: #3a63b8;
+  border-color: #4b78d8;
+  color: #fff;
+}
+
+.value-btn.dimmed {
+  opacity: 0.45;
+}
+
+.value-label {
+  font-size: 12px;
+  color: #9aa0ab;
+  font-variant-numeric: tabular-nums;
+}

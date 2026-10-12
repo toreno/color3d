@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>色立体ビューア | マンセル・PCCS Color Solid Viewer</title>
+    <meta
+      name="description"
+      content="マンセルとPCCSの色立体をブラウザで3D表示。色相・明度・彩度で色を立体配置し、回転・ズーム・スライス・配色パターン生成ができます。"
+    />
+    <meta property="og:title" content="色立体ビューア (マンセル / PCCS)" />
+    <meta
+      property="og:description"
+      content="マンセルとPCCSの色立体を3Dで観察。明度・彩度スライス、配色パターン生成つき。"
+    />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="header-main">
+          <h1>色立体ビューア (Color Solid Viewer)</h1>
+          <p>ドラッグで回転 / ホイールでズーム / 色チップをクリックで詳細表示</p>
+        </div>
+        <label class="system-switch">
+          表色系
+          <select id="systemSelect"></select>
+        </label>
+      </header>
+
+      <div id="viewer"></div>
+
+      <aside>
+        <div class="control">
+          <h2><span id="valueAxisName">明度</span>スライス</h2>
+          <label>
+            <input type="checkbox" id="sliceToggle" />
+            特定の<span class="axis-name">明度</span>だけ表示
+          </label>
+          <div id="valueButtons" class="value-buttons"></div>
+          <div id="valueLabel" class="value-label">すべて</div>
+        </div>
+
+        <div class="control">
+          <h2><span id="chromaAxisName">彩度</span>スライス</h2>
+          <label>
+            <input type="checkbox" id="chromaSliceToggle" />
+            特定の<span class="axis-name">彩度</span>だけ表示
+          </label>
+          <div id="chromaButtons" class="value-buttons"></div>
+          <div id="chromaLabel" class="value-label">すべて</div>
+        </div>
+
+        <div class="control">
+          <h2>色域</h2>
+          <label>
+            <input type="checkbox" id="gamutToggle" />
+            sRGB色域外も含める
+          </label>
+          <p class="hint">
+            通常は sRGB で表示できる色だけを並べます。チェックすると色域外の色も
+            クランプして表示し、色立体の外形を広げます。
+          </p>
+        </div>
+
+        <div class="control">
+          <h2>選択中の色</h2>
+          <div id="info">
+            <p class="hint">色チップをクリックすると、マンセル値・sRGB・HEX を表示します。</p>
+          </div>
+        </div>
+
+        <div class="control">
+          <h2>配色パターン</h2>
+          <label>
+            ベースカラー
+            <input type="color" id="baseColor" value="#c82828" />
+          </label>
+          <button id="useSelected" type="button" class="btn">
+            選択中の色をベースに
+          </button>
+          <label class="scheme-label">
+            パターン
+            <select id="schemeSelect"></select>
+          </label>
+          <label class="scheme-filter">
+            <input type="checkbox" id="schemeFilterToggle" />
+            色立体をこの配色の色だけに絞る
+          </label>
+          <div id="schemeResult" class="scheme-result"></div>
+          <p class="hint">
+            色相=マンセル色相環(100ステップ)、明度・彩度=マンセル軸で計算します。
+            ⚠ は sRGB 色域外（近似表示）です。色見本クリックで HEX をコピー。
+          </p>
+        </div>
+
+        <div class="control">
+          <details id="systemInfo" class="system-info">
+            <summary><span id="systemInfoTitle">マンセルとは</span></summary>
+            <div id="systemInfoBody" class="system-info-body"></div>
+          </details>
+        </div>
+      </aside>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

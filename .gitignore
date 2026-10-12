@@ -1,0 +1,17 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Node (not used now, but ignore if ever added)
+node_modules/
+npm-debug.log*
+
+# Local server / temp
+.cache/
+*.tmp
+
+# Template kept for reference; ignore if you don't want it published
+# README_TEMPLATE.md
