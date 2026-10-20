@@ -13,5 +13,8 @@ npm-debug.log*
 .cache/
 *.tmp
 
+# Deployment artifact (generated for manual upload/sharing, not source)
+color3d-site.zip
+
 # Template kept for reference; ignore if you don't want it published
 # README_TEMPLATE.md

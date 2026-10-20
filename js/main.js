@@ -6,11 +6,19 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { buildSolid } from "./solid.js";
 import { munsellSystem } from "./munsell.js";
 import { pccsSystem } from "./pccs.js";
+import { hsvSystem } from "./hsv.js";
+import { cielabSystem } from "./cielab.js";
 
-// Available color systems, keyed by id.
-const SYSTEMS = { munsell: munsellSystem, pccs: pccsSystem };
+// Available color systems, keyed by id. PCCS is listed first so it is the
+// default both in the selector and as the initially active system.
+const SYSTEMS = {
+  pccs: pccsSystem,
+  munsell: munsellSystem,
+  hsv: hsvSystem,
+  cielab: cielabSystem,
+};
 // The active system descriptor (set in initSystemUI / switchSystem).
-let system = munsellSystem;
+let system = pccsSystem;
 
 const canvasHost = document.getElementById("viewer");
 const infoPanel = document.getElementById("info");
@@ -36,6 +44,7 @@ let renderer, scene, camera, controls;
 let solid = null;        // { group, mesh, chips }
 let highlightMesh = null;
 let schemeOutlines = []; // outline boxes marking the active scheme's chips
+let axisMesh = null;     // vertical value-axis guide (resized per system)
 
 // Current base color on the active system's axes { step, value, chroma }.
 let baseMunsell = null;
@@ -81,11 +90,12 @@ function init() {
   fill.position.set(-8, -4, -10);
   scene.add(fill);
 
-  // Vertical value axis guide (sized to the active system's value range).
-  const axisH = (system.valueMax - system.valueMin + 2) * 0.9;
-  const axisGeo = new THREE.CylinderGeometry(0.03, 0.03, axisH, 8);
+  // Vertical value-axis guide. A unit-height cylinder we scale per system in
+  // rebuildSolid() so it always matches the solid's actual height.
+  const axisGeo = new THREE.CylinderGeometry(0.03, 0.03, 1, 8);
   const axisMat = new THREE.MeshBasicMaterial({ color: 0x555860 });
-  scene.add(new THREE.Mesh(axisGeo, axisMat));
+  axisMesh = new THREE.Mesh(axisGeo, axisMat);
+  scene.add(axisMesh);
 
   // Highlight marker for the selected chip (a wireframe cube).
   const hlGeo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
@@ -153,6 +163,13 @@ function rebuildSolid() {
   solid = buildSolid(system, { includeOutOfGamut: gamutToggle.checked });
   scene.add(solid.group);
   highlightMesh.visible = false;
+
+  // Resize the value-axis guide to match the solid's actual height.
+  if (axisMesh) {
+    const span = system.valueMax - system.valueMin;
+    axisMesh.scale.y = (span + 2) * solid.heightPerValue;
+  }
+
   // Chroma buttons depend on which chroma values actually exist in the solid,
   // so (re)build them whenever the solid changes.
   buildChromaButtons();

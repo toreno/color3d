@@ -11,6 +11,7 @@
 
 import * as THREE from "three";
 
+// Default vertical scale (used when a system does not specify its own).
 const HEIGHT_PER_VALUE = 0.9;
 const CHIP_SIZE = 0.42;
 
@@ -21,6 +22,12 @@ export function buildSolid(system, options = {}) {
   const includeOutOfGamut = !!options.includeOutOfGamut;
   const radiusPerChroma = system.radiusPerChroma;
   const valueCenter = system.valueCenter;
+  // Systems with wide value ranges (HSV 0..100, CIELAB 0..95) set a smaller
+  // heightPerValue so the solid is not stretched vertically.
+  const heightPerValue =
+    typeof system.heightPerValue === "number"
+      ? system.heightPerValue
+      : HEIGHT_PER_VALUE;
 
   const group = new THREE.Group();
   const chipData = [];
@@ -38,7 +45,7 @@ export function buildSolid(system, options = {}) {
         const col = system.toSRGB(step, v, c);
         if (!col.inGamut && !includeOutOfGamut) break;
         const radius = c * radiusPerChroma;
-        const y = (v - valueCenter) * HEIGHT_PER_VALUE;
+        const y = (v - valueCenter) * heightPerValue;
         defs.push({
           x: radius * Math.cos(angle),
           y,
@@ -58,7 +65,7 @@ export function buildSolid(system, options = {}) {
     const col = system.toSRGB(system.sampleToStep(0), v, 0);
     defs.push({
       x: 0,
-      y: (v - valueCenter) * HEIGHT_PER_VALUE,
+      y: (v - valueCenter) * heightPerValue,
       z: 0,
       color: col,
       step: system.sampleToStep(0),
@@ -115,7 +122,7 @@ export function buildSolid(system, options = {}) {
     mesh,
     chips: chipData,
     valueRange: [system.valueMin, system.valueMax],
-    heightPerValue: HEIGHT_PER_VALUE,
+    heightPerValue,
   };
 }
 
